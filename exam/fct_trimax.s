@@ -95,6 +95,8 @@ void trier_liste0(struct cellule_t **liste)
     // struct cellule_t **liste : %rdi
 trier_liste1:
     // struct cellule_t fictif : -16(%rbp)    (128 bits)
+        // fictif.val : -16(%rbp)
+        // fictif.suiv : (-16+8)(%rbp)
     // struct cellule_t *prec_max : -24(%rbp) (64 bits)
     // struct cellule_t *prec : -32(%rbp)     (64 bits)
     enter $32, $0
@@ -135,7 +137,7 @@ end_if:
     // prec = prec->suiv
     movq -32(%rbp), %rax
     movq 8(%rax), %rax
-    movq %rax, -24(%rbp)
+    movq %rax, -32(%rbp)
     jmp while2
 end_while2:
     jmp while
