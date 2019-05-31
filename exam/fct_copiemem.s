@@ -80,7 +80,21 @@ end_for2:
 
     .text
     .globl copiemem3
- copiemem3:
+    // void copiemem0(uint8_t *dst, uint8_t *src, uint32_t taille)
+    // uint8_t *dst : 8(%ebp)
+    // uint8_t *src : 12(%ebp)
+    // uint32_t taille : 16(%ebp)
+copiemem3:
     enter $0, $0
+    // adresse de la zone source dans %esi
+    movl 12(%ebp), %esi
+    // adresse de la zone destination dans %edi
+    movl 8(%ebp), %edi
+    // mise à zéro du bit D de %eflags : on incrémente %esi et %edi
+    cld
+    // parametrage du nombre de répétitions
+    movl 16(%ebp), %ecx
+    // instruction movsb sera répété "taille" fois
+    rep movsb
     leave
     ret
