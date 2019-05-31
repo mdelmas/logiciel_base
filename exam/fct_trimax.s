@@ -67,9 +67,95 @@ end_for:
     leave
     ret
 
-
+/*
+void trier_liste0(struct cellule_t **liste)
+{
+    struct cellule_t fictif;
+    fictif.suiv = *liste;
+    *liste = NULL;
+    while (NULL != fictif.suiv) {
+        struct cellule_t *prec_max = &fictif;
+        struct cellule_t *prec = fictif.suiv;
+        while (NULL != prec->suiv) {
+            if (prec->suiv->val > prec_max->suiv->val) {
+                prec_max = prec;
+            }
+            prec = prec->suiv;
+        }
+    }
+    prec = prec_max->suiv->suiv;
+    prec_max->suiv->suiv = *liste;
+    *liste = prec_max->suiv;
+    prec_max->suiv = prec;
+}
+*/
+    .text
+    // void trier_liste0(struct cellule_t **liste)
     .globl trier_liste1
+    // struct cellule_t **liste : %rdi
 trier_liste1:
-    enter $0, $0
+    // struct cellule_t fictif : -16(%rbp)    (128 bits)
+    // struct cellule_t *prec_max : -24(%rbp) (64 bits)
+    // struct cellule_t *prec : -32(%rbp)     (64 bits)
+    enter $32, $0
+    // fictif.suiv = *liste
+    movq (%rdi), (-16+8)(%rbp)
+    // *liste = NULL
+    movq $0, (%rdi)
+while:
+    // while (NULL != fictif.suiv)
+    testq $0, (-16+8)(%rbp)
+    je end_while
+    // struct cellule_t *prec_max = &fictif
+    leaq -16(%rbp), %rax
+    movq %rax, -24(%rbp)
+    // struct cellule_t *prec = fictif.suiv
+    movq (-16+8)(%rbp), %rax
+    movq %rax, -32(%rbp)
+while2:
+    // while (NULL != prec->suiv)
+    movq -32(%rbp), %rax
+    testq $0, 8(%rax)
+    je end_while2
+if:
+    // if (prec->suiv->val > prec_max->suiv->val)
+    movq -32(%rbp), %rax
+    movq 8(%rax), %rax
+    movw (%rax), %rax
+    movq -24(%rbp), %rdx
+    movq 8(%rdx), %rdx
+    movw (%rdx), %rdx
+    cmpw %rdx, %rax
+    jle end_if
+    // prec_max = prec
+    movq -32(%rbp), %rax
+    movq %rax, -24(%rbp)
+end_if:
+    // prec = prec->suiv
+    movq -32(%rbp), %rax
+    movq 8(%rax), %rax
+    movq %rax, -24(%rbp)
+    jmp while2
+end_while2:
+    jmp while
+end_while:
+    // prec = prec_max->suiv->suiv
+    movq -24(%rbp), %rax
+    movq 8(%rax), %rax
+    movq 8(%rax), %rax
+    movq %rax, -32(%rbp)
+    // prec_max->suiv->suiv = *liste
+    movq (%rdi), %rdx
+    movq -24(%rbp), %rax
+    movq 8(%rax), %rax
+    movq %rdx, 8(%rax)
+    // *liste = prec_max->suiv
+    movq -24(%rbp), %rax
+    movq 8(%rax), %rax
+    movq %rax, (%rdi)
+    // prec_max->suiv = prec
+    movq -24(%rbp), %rax
+    movq -32(%rbp), %rdx
+    movq %rdx, 8(%rax)
     leave
     ret
