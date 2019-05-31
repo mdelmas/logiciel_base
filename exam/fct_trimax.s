@@ -82,11 +82,11 @@ void trier_liste0(struct cellule_t **liste)
             }
             prec = prec->suiv;
         }
+        prec = prec_max->suiv->suiv;
+        prec_max->suiv->suiv = *liste;
+        *liste = prec_max->suiv;
+        prec_max->suiv = prec;
     }
-    prec = prec_max->suiv->suiv;
-    prec_max->suiv->suiv = *liste;
-    *liste = prec_max->suiv;
-    prec_max->suiv = prec;
 }
 */
     .text
@@ -140,8 +140,6 @@ end_if:
     movq %rax, -32(%rbp)
     jmp while2
 end_while2:
-    jmp while
-end_while:
     // prec = prec_max->suiv->suiv
     movq -24(%rbp), %rax
     movq 8(%rax), %rax
@@ -153,12 +151,14 @@ end_while:
     movq 8(%rax), %rax
     movq %rdx, 8(%rax)
     // *liste = prec_max->suiv
-    movq -24(%rbp), %rax
+    movq -24(%rbp), %t
     movq 8(%rax), %rax
     movq %rax, (%rdi)
     // prec_max->suiv = prec
     movq -24(%rbp), %rax
     movq -32(%rbp), %rdx
     movq %rdx, 8(%rax)
+    jmp while
+end_while:
     leave
     ret
