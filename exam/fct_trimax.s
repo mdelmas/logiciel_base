@@ -48,15 +48,27 @@ for:
     call malloc
     movq %rax, -20(%rbp)
     // cell->val = tab[i]
-    movw (-28(%rbp), -16(%rbp), 2), -20(%rbp)
+    movq -28(%rbp), %rdx
+    movl -16(%rbp), %eax
+    movw (%rdx, %rax, 2), %ax
+    movw %ax, -20(%rbp)
     // cell->suiv = liste
-    movq -8(%rbp), (-20+8)(%rbp)
+    movq -8(%rbp), %rax
+    movq %rax, (-20+8)(%rbp)
     // liste = cell
-    movq -20(%rbp), -8(%rbp)
+    movq -20(%rbp), %rax
+    movq %rax, -8(%rbp)
     // i--
     subl $1, -16(%rbp)
 end_for:
     // return liste
     movq -8(%rbp), %rax
+    leave
+    ret
+
+
+    .globl trier_liste1
+trier_liste1:
+    enter $0, $0
     leave
     ret
