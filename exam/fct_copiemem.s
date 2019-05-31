@@ -56,16 +56,17 @@ copiemem2:
     movl 8(%ebp), %eax
     movl 12(%ebp), %ecx
     movl 16(%ebp), %edx
+    movl $0, %ebx
     // uint32_t i = 0
     movl $0, %esi
 for2:
     // for (i < taille)
-    cmpl %eax, %esi
+    cmpl %edx, %esi
     jge end_for2
     // src[i]
     movb (%ecx, %esi, 1), %bl
     // dst[i] = src[i]
-    movb %cl, (%eax, %esi, 1)
+    movb %bl, (%eax, %esi, 1)
     // i++
     addl $1, %esi
     jmp for2
