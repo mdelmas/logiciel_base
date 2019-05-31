@@ -99,12 +99,13 @@ trier_liste1:
     // struct cellule_t *prec : -32(%rbp)     (64 bits)
     enter $32, $0
     // fictif.suiv = *liste
-    movq (%rdi), (-16+8)(%rbp)
+    movq (%rdi), %rax
+    movq %rax, (-16+8)(%rbp)
     // *liste = NULL
     movq $0, (%rdi)
 while:
     // while (NULL != fictif.suiv)
-    testq $0, (-16+8)(%rbp)
+    cmpq $0, (-16+8)(%rbp)
     je end_while
     // struct cellule_t *prec_max = &fictif
     leaq -16(%rbp), %rax
@@ -115,17 +116,17 @@ while:
 while2:
     // while (NULL != prec->suiv)
     movq -32(%rbp), %rax
-    testq $0, 8(%rax)
+    cmpq $0, 8(%rax)
     je end_while2
 if:
     // if (prec->suiv->val > prec_max->suiv->val)
     movq -32(%rbp), %rax
     movq 8(%rax), %rax
-    movw (%rax), %rax
+    movw (%rax), %ax
     movq -24(%rbp), %rdx
     movq 8(%rdx), %rdx
-    movw (%rdx), %rdx
-    cmpw %rdx, %rax
+    movw (%rdx), %dx
+    cmpw %dx, %ax
     jle end_if
     // prec_max = prec
     movq -32(%rbp), %rax

@@ -8,12 +8,12 @@ void copiemem0(uint8_t *dst, uint8_t *src, uint32_t taille)
 */
 
     .text
-    .globl copiemem0
+    .globl copiemem1
     // void copiemem0(uint8_t *dst, uint8_t *src, uint32_t taille)
     // uint8_t *dst : 8(%ebp)
     // uint8_t *src : 12(%ebp)
     // uint32_t taille : 16(%ebp)
-copiemem0:
+copiemem1:
     // uint32_t i : -4(%ebp)
     enter $4, $0
     // uint32_t i = 0
@@ -35,3 +35,18 @@ for:
 end_for:
     leave
     ret
+
+    .text
+    .globl copiemem2
+copiemem2:
+    enter $0, $0
+    leave
+    ret
+
+    .text
+    .globl copiemem3
+ copiemem3:
+    enter $0, $0
+    leave
+    ret
+
