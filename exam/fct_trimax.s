@@ -40,7 +40,7 @@ creer_liste1:
 for:
     // for i >= 0
     cmpl $0, -12(%rbp)
-    jnae end_for
+    jnge end_for
     // struct cellule_t *cell = malloc(sizeof(struct cellule_t))
     movq $16, %rdi
     call malloc
@@ -49,15 +49,18 @@ for:
     movq -28(%rbp), %rdx
     movl -12(%rbp), %eax
     movw (%rdx, %rax, 2), %ax
-    movw %ax, -20(%rbp)
+    movq -20(%rbp), %rdx
+    movw %ax, (%rdx)
     // cell->suiv = liste
     movq -8(%rbp), %rax
-    movq %rax, (-20+8)(%rbp)
+    movq -20(%rbp), %rdx
+    movq %rax, 8(%rdx)
     // liste = cell
     movq -20(%rbp), %rax
     movq %rax, -8(%rbp)
     // i--
     subl $1, -12(%rbp)
+    jmp for
 end_for:
     // return liste
     movq -8(%rbp), %rax
