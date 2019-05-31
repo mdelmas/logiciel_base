@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <inttypes.h>
+#include <inttypes.h> 
 
 // fonctions a implanter en assembleur x86_64
 extern struct cellule_t *creer_liste1(uint16_t tab[], uint32_t taille);
@@ -176,4 +176,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
