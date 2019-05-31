@@ -30,16 +30,48 @@ for:
     // dst[i] = src[i]
     movl 8(%ebp), %eax
     movb %cl, (%eax, %edx, 1)
+    // i++
     addl $1, -4(%ebp)
     jmp for
 end_for:
     leave
     ret
 
+
+
     .text
     .globl copiemem2
+    // void copiemem0(uint8_t *dst, uint8_t *src, uint32_t taille)
+    // uint8_t *dst : 8(%ebp)      -> %eax
+    // uint8_t *src : 12(%ebp)     -> %ecx
+    // uint32_t taille : 16(%ebp)  -> %edx
 copiemem2:
+    // uint32_t i : -4(%ebp)       -> %esi
     enter $0, $0
+    // sauvegarde registres non scratch
+    pushl %ebx
+    pushl %esi
+    // copie valeurs des paramètres dans des registres
+    movl 8(%ebp), %eax
+    movl 12(%ebp), %ecx
+    movl 16(%ebp), %edx
+    // uint32_t i = 0
+    movl $0, %esi
+for:
+    // for (i < taille)
+    cmpl %eax, %esi
+    jge end_for
+    // src[i]
+    movb (%ecx, %esi, 1), %bl
+    // dst[i] = src[i]
+    movb %cl, (%eax, %esi, 1)
+    // i++
+    addl $1, %esi
+    jmp for
+end_for:
+    // restauration registres non scratch
+    popl %esi
+    popl %ebx
     leave
     ret
 
@@ -49,4 +81,3 @@ copiemem2:
     enter $0, $0
     leave
     ret
-
